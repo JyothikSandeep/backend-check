@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-app.post("/data", (req, res) => {
+app.get("/data", (req, res) => {
   console.log("hi");
   res.send("hello first one");
 });
