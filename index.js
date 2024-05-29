@@ -6,7 +6,8 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://main--aesthetic-parfait-7d40d0.netlify.app",
+    // origin: "https://main--aesthetic-parfait-7d40d0.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -60,15 +61,22 @@ io.on("connection", (socket) => {
   });
   socket.on("change_in_move", (data) => {
     console.log(data);
-    console.log(allUsers[socket.id]);
+    // console.log(allUsers[socket.id]);
     console.log("this is opponent" + typeof data.opponentId);
     // console.log("hi" + allUsers[String(data.opponentId)]);
     let opponent = allUsers[data.opponentId];
     let currentPlayer = allUsers[socket.id];
-    // console.log(opponent);
-    opponent.socket.emit("data_from_client", { data });
-    currentPlayer.socket.emit("data_from_client", { data });
+    console.log(opponent.name);
+    opponent.socket.emit("data_from_client", {
+      data,
+      currentPlayer: opponent.name,
+    });
+    currentPlayer.socket.emit("data_from_client", {
+      data,
+      currentPlayer: opponent.name,
+    });
   });
+  // socket.on()
   console.log("connected with socket with id", socket.id);
   // console.log(allUsers);
 });
