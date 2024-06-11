@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const { connect } = require("http2");
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -21,10 +22,15 @@ io.on("connection", (socket) => {
     online: true,
     playing: false,
   };
+  socket.on("check_winner", (data) => {
+    let currentPlayer = allUsers[socket.id];
+    let opponent = allUsers[data.opponentId];
+    currentPlayer.socket.emit("winner_from_server", data.name.name);
+    opponent.socket.emit("winner_from_server", data.name.name);
+  });
   socket.on("check_for_palyers", (data) => {
     currentPlayer = allUsers[socket.id];
     currentPlayer.name = data.name;
-    // console.log(currentPlayer.name)
     let opponent;
     for (i in allUsers) {
       if (
@@ -84,14 +90,14 @@ io.on("connection", (socket) => {
 // res.send("hi");
 // });
 
-app.get("/data", (req, res) => {
-  console.log("hi");
-  res.send("hello first one");
-});
-app.get("/", (req, res) => {
-  console.log("hi");
-  res.send("dhjasdhj");
-});
+// app.get("/data", (req, res) => {
+//   console.log("hi");
+//   res.send("hello first one");
+// });
+// app.get("/", (req, res) => {
+//   console.log("hi");
+//   res.send("dhjasdhj");
+// });
 server.listen(4000, () => {
   console.log("listening to the port");
 });
